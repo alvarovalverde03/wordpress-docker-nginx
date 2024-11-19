@@ -1,0 +1,38 @@
+services:
+  db:
+    image: mysql:8.4.3
+    container_name: your-domain_db
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - MYSQL_DATABASE=wordpress
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - your-domain_network
+
+  wordpress:
+    depends_on:
+      - db
+    image: wordpress:6.7.0-php8.2-fpm-alpine
+    container_name: your-domain_wordpress
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:9030:9000"
+    env_file: .env
+    environment:
+      - WORDPRESS_DB_HOST=db:3306
+      - WORDPRESS_DB_USER=$MYSQL_USER
+      - WORDPRESS_DB_PASSWORD=$MYSQL_PASSWORD
+      - WORDPRESS_DB_NAME=wordpress
+    volumes:
+      - /var/www/your-domain.com:/var/www/html
+    networks:
+      - your-domain_network
+
+volumes:
+  dbdata:
+
+networks:
+  your-domain_network:
+    driver: bridge
