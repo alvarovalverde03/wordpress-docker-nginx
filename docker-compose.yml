@@ -27,6 +27,7 @@ services:
       - WORDPRESS_DB_NAME=wordpress
     volumes:
       - /var/www/your-domain.com:/var/www/html
+      - ./wordpress-config/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
     networks:
       - your-domain_network
 
